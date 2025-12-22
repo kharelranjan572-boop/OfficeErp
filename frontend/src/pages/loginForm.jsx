@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import InputField from "../component/inputField";
+import { useMutation } from "@tanstack/react-query";
+import { postData } from "../api/client";
+import { SuccessNotify } from "../component/hotToaster.jsx";
+import { Toaster } from 'react-hot-toast';
 
 const LoginForm = () => {
+
+
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -16,15 +22,32 @@ const LoginForm = () => {
             [name]: type === "checkbox" ? checked : value,
         }));
     };
+    const mutation = useMutation({
+        mutationFn: postData,
+        onSuccess: (data) => {
+            setFormData({
+                username: "",
+                password: "",
+                role: "admin",
+            });
+
+            console.log("✅ Login success:", data);
+        },
+        onError: (error) => {
+            console.error("❌ Login failed:", error);
+        },
+    });
+
 
     const handleSubmit = (e) => {
-        // e.preventDefault();
+        e.preventDefault();
         console.log("Login Data:", formData);
-        // Add your login logic here
+        mutation.mutate(formData);
+
     };
 
     return (
-        <div className="flex relative z-50 items-center justify-center min-h-screen bg-transparent">
+        <div className="flex relative z-50 items-center justify-center min-h-screen md:w-full lg:full  sm:w-full   w-11/12 mx-auto">
             <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
                 <h2 className="font-bold mb-6 text-center text-amber-500 text-3xl underline  [font-family:'Arial_Narrow',sans-serif]">LogIn</h2>
                 <form onSubmit={handleSubmit}>
@@ -84,7 +107,7 @@ const LoginForm = () => {
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
                                 >
-                                     <path
+                                    <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={2}
@@ -96,7 +119,7 @@ const LoginForm = () => {
                                         strokeWidth={2}
                                         d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.958 9.958 0 012.422-3.512M6.636 6.636A9.958 9.958 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.958 9.958 0 01-1.268 2.634M3 3l18 18"
                                     />
-                                    
+
                                 </svg>
                             )}
                         </button>
@@ -125,9 +148,11 @@ const LoginForm = () => {
                     <button
                         type="submit"
                         className="w-full cursor-pointer bg-amber-400 text-white py-2 px-4 text-md rounded-md hover:bg-amber-500 transition [font-family:'Arial_Narrow',sans-serif]"
-                    >
-                        Login
+                        onClick={SuccessNotify}  >
+                        {mutation.isPending ? "Saving..." : "Submit"}
                     </button>
+                    {mutation.isError && <p>Error occurred</p>}
+                    {mutation.isSuccess && <Toaster />}
                 </form>
             </div>
         </div>

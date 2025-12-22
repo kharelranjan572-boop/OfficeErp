@@ -1,39 +1,19 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoginForm from '../pages/loginForm';
-const loginCover = () => {
-    const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        const checkScreen = () => {
-            if (typeof window !== "undefined") {
-                setIsMobile(window.innerWidth < 768);
-            }
-        };
 
-        checkScreen(); // now valid
-        window.addEventListener("resize", checkScreen);
+const LoginCover = () => {
+  const [screenType, setScreenType] = useState("desktop");
 
-        return () => window.removeEventListener("resize", checkScreen);
-    }, []);
-    return (
-        <div
-            className="relative bg-cover bg-center bg-no-repeat bg-amber-600 h-screen w-full"
-            style={{ backgroundImage: "url('/images/bg.jpg')" }}
-        >
-            {/* Bottom clipped section */}
-            <LoginForm />  
-            <div
-                className="absolute bottom-0 bg-white  w-full "
-                style={{
-                    height: isMobile ? "300px" : "432px",
-                    clipPath: isMobile
-                        ? "none"
-                        : "polygon(0 0, 50% 150px, 100% 0, 100% 100%, 0 100%)",
-                }}
-            >
-            </div>
-        </div>
 
-    )
-}
-export default loginCover;
+
+  return (
+    <div className="relative h-screen bg-amber-700 w-full overflow-hidden">
+      <div className='bg-transparent absolute top-0 w-full h-90 ' ></div>
+      <div className=" absolute md:-top-32  -top-1 lg:top-20 left-0 w-full h-screen"><LoginForm/> </div>
+      <div className='bg-white absolute bottom-0 w-full md:h-8/12 lg:h-90 h-8/12   lg:[clip-path:polygon(0%_0%,50%_120px,100%_0%,100%_100%,0%_100%)]   md:[clip-path:polygon(0%_0%,50%_100px,100%_0%,100%_100%,0%_100%)]  [clip-path:polygon(0%_0%,50%_60px,100%_0%,100%_100%,0%_100%)]'></div>
+    </div>
+
+  );
+};
+
+export default LoginCover;

@@ -2,7 +2,7 @@ import React from 'react';
 
 const InputField = ({ label, type = 'text', name, value, onChange, placeholder }) => {
     return (
-        <div className="mb-4">
+        <div className="mb-4 ">
             {label && (
                 <label
                     htmlFor={name}
